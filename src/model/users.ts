@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
       },
     },
     personalInformation: {
+      mobileNo: {
+        type: String,
+        required: true,
+      },
       birthdate: {
         type: Date,
         required: true,
