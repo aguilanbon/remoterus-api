@@ -19,11 +19,20 @@ export const registerUser = async (
 
   try {
     const isEmailExisting = await getUserByEmail(email);
+    const isUsernameExisting = await getUserByUserName(username);
 
     if (isEmailExisting) {
       const response: ResponseProps = {
         isError: true,
         responseMessage: "Email is already existing.",
+      };
+      res.status(400).send(response);
+      return;
+    }
+    if (isUsernameExisting) {
+      const response: ResponseProps = {
+        isError: true,
+        responseMessage: "Username is already taken.",
       };
       res.status(400).send(response);
       return;
@@ -74,6 +83,8 @@ export const registerUser = async (
 export const getUsers = () => UserModel.find({});
 
 export const getUserByEmail = (email: String) => UserModel.findOne({ email });
+export const getUserByUserName = (username: String) =>
+  UserModel.findOne({ username });
 
 export const getUserBySessionToken = (sessionToken: String) =>
   UserModel.findOne({ "authentication.sessionToken": sessionToken });
