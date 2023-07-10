@@ -19,25 +19,26 @@ const UserSchema = new mongoose.Schema(
       },
       sessionToken: { type: String, select: false },
     },
-    name: {
-      first: {
-        type: String,
-        required: true,
-      },
-      middle: {
-        type: String,
-        required: false,
-      },
-      last: {
-        type: String,
-        required: true,
-      },
-      suffix: {
-        type: String,
-        required: false,
-      },
-    },
+
     personalInformation: {
+      name: {
+        first: {
+          type: String,
+          required: true,
+        },
+        middle: {
+          type: String,
+          required: false,
+        },
+        last: {
+          type: String,
+          required: true,
+        },
+        suffix: {
+          type: String,
+          required: false,
+        },
+      },
       mobileNo: {
         type: String,
         required: true,
