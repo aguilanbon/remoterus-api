@@ -80,6 +80,54 @@ export const registerUser = async (
   }
 };
 
+export const signInUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const { username, password } = req.body;
+
+  try {
+    let user = await getUserByEmail(username).select(
+      "+authentication.password"
+    );
+
+    if (!user) {
+      user = await getUserByUserName(username).select(
+        "+authentication.password"
+      );
+    }
+    if (!user) {
+      const response: ResponseProps = {
+        isError: true,
+        responseMessage: "Invalid username or email",
+      };
+      res.status(400).send(response);
+      return;
+    }
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user.authentication.password
+    );
+
+    if (!passwordMatch) {
+      const response: ResponseProps = {
+        isError: true,
+        responseMessage: "Invalid username/email or password",
+      };
+      res.status(400).send(response);
+      return;
+    }
+    const response: ResponseProps = {
+      isError: false,
+      responseMessage: "Sign in successful",
+      responseData: user,
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
 export const getUsers = () => UserModel.find({});
 
 export const getUserByEmail = (email: String) => UserModel.findOne({ email });
