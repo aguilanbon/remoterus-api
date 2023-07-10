@@ -22,7 +22,6 @@ export const registerUser = async (
       const response: ResponseProps = {
         isError: true,
         responseMessage: "Email is already existing.",
-        responseData: {},
       };
       res.status(400).send(response);
       return;
@@ -31,7 +30,6 @@ export const registerUser = async (
       const response: ResponseProps = {
         isError: true,
         responseMessage: "Username cannot contain spaces.",
-        responseData: {},
       };
       res.status(400).send(response);
       return;
