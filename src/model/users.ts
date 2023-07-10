@@ -19,6 +19,62 @@ const UserSchema = new mongoose.Schema(
       },
       sessionToken: { type: String, select: false },
     },
+    name: {
+      first: {
+        type: String,
+        required: true,
+      },
+      middle: {
+        type: String,
+        required: false,
+      },
+      last: {
+        type: String,
+        required: true,
+      },
+      suffix: {
+        type: String,
+        required: false,
+      },
+    },
+    personalInformation: {
+      birthdate: {
+        type: Date,
+        required: true,
+      },
+      address: {
+        street: {
+          type: String,
+          required: false,
+        },
+        zipcode: {
+          type: String,
+          required: false,
+        },
+        city: {
+          type: String,
+          required: false,
+        },
+        state: {
+          type: String,
+          required: false,
+        },
+        country: {
+          type: String,
+          required: false,
+        },
+      },
+    },
+    role: {
+      type: String,
+      required: true,
+      default: "user",
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   { timestamps: true }
 );
