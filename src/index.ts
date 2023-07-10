@@ -6,7 +6,7 @@ import compression from "compression";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import { UserModel } from "./db/users";
+import { UserModel } from "./model/users";
 
 const app = express();
 
@@ -27,9 +27,9 @@ app.listen(8080, () =>
 mongoose
   .connect(process.env.MONGO_COMPASS_URL)
   .then(() => console.log("connected to db"));
-mongoose.connection.on("error", (error: Error) => console.log("error"));
+mongoose.connection.on("error", (error: Error) => console.log(error));
 
-app.get("/create", async (req, res) => {
+app.get("/create", async (req: express.Request, res: express.Response) => {
   const newUser = new UserModel({
     username: "bonpuge",
     email: "aguilanbon@gmail.com",
