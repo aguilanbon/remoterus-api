@@ -6,16 +6,11 @@ import compression from "compression";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import { UserModel } from "./model/users";
+import auth_router from "./routes/users";
 
 const app = express();
 
-app.use(
-  cors({
-    credentials: true,
-  })
-);
-
+app.use(cors());
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -29,15 +24,4 @@ mongoose
   .then(() => console.log("connected to db"));
 mongoose.connection.on("error", (error: Error) => console.log(error));
 
-// app.get("/create", async (req: express.Request, res: express.Response) => {
-//   const newUser = new UserModel({
-//     username: "bon aguilan",
-//     email: "aguilanbon@gmail.com",
-//     authentication: {
-//       password: "amazing",
-//       sessionToken: "abc123",
-//     },
-//   });
-
-//   await newUser.save();
-// });
+app.use("/auth", auth_router);
