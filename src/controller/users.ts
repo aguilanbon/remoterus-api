@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { UserModel } from "../model/users";
 import express from "express";
 import { ResponseProps } from "types/response.type";
+import bcrypt from "bcrypt";
 
 export const registerUser = async (
   req: express.Request,
@@ -18,6 +19,7 @@ export const registerUser = async (
 
   try {
     const isEmailExisting = await getUserByEmail(email);
+
     if (isEmailExisting) {
       const response: ResponseProps = {
         isError: true,
@@ -49,7 +51,24 @@ export const registerUser = async (
     };
     res.status(200).send(response);
     return;
-  } catch (error) {}
+  } catch (error) {
+    if (
+      error.name === "ValidationError" &&
+      error.errors &&
+      error.errors["authentication.password"]
+    ) {
+      const passwordErrorMessage =
+        error.errors["authentication.password"].message;
+      const response: ResponseProps = {
+        isError: true,
+        responseMessage: passwordErrorMessage,
+      };
+      res.status(400).send(response);
+    } else {
+      // Handle other errors
+      res.status(400).send(error.message);
+    }
+  }
 };
 
 export const getUsers = () => UserModel.find({});
