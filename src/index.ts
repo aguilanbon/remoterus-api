@@ -29,16 +29,16 @@ mongoose
   .then(() => console.log("connected to db"));
 mongoose.connection.on("error", (error: Error) => console.log(error));
 
-app.get("/create", async (req: express.Request, res: express.Response) => {
-  const newUser = new UserModel({
-    username: "bonpuge",
-    email: "aguilanbon@gmail.com",
-    authentication: {
-      password: "123",
-      salt: "abc",
-      sessionToken: "abc123",
-    },
-  });
+// app.get("/create", async (req: express.Request, res: express.Response) => {
+//   const newUser = new UserModel({
+//     username: "bonpuge",
+//     email: "aguilanbon@gmail.com",
+//     authentication: {
+//       password: "123",
+//       salt: "abc",
+//       sessionToken: "abc123",
+//     },
+//   });
 
-  await newUser.save();
-});
+//   await newUser.save();
+// });
