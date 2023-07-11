@@ -4,6 +4,7 @@ import express from "express";
 import { ResponseProps } from "types/response.type";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/jwtgenerator";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const registerUser = async (
   req: express.Request,
@@ -25,7 +26,7 @@ export const registerUser = async (
     if (isEmailExisting) {
       const response: ResponseProps = {
         isError: true,
-        responseMessage: "Email is already existing.",
+        message: "Email is already existing.",
       };
       res.status(400).send(response);
       return;
@@ -33,7 +34,7 @@ export const registerUser = async (
     if (isUsernameExisting) {
       const response: ResponseProps = {
         isError: true,
-        responseMessage: "Username is already taken.",
+        message: "Username is already taken.",
       };
       res.status(400).send(response);
       return;
@@ -41,7 +42,7 @@ export const registerUser = async (
     if (username.includes(" ")) {
       const response: ResponseProps = {
         isError: true,
-        responseMessage: "Username cannot contain spaces.",
+        message: "Username cannot contain spaces.",
       };
       res.status(400).send(response);
       return;
@@ -56,10 +57,10 @@ export const registerUser = async (
     });
     const response: ResponseProps = {
       isError: false,
-      responseMessage: "Succesfully created user.",
-      responseData: newUser,
+      message: "Succesfully created user.",
+      data: newUser,
     };
-    generateToken(res, newUser._id.toString());
+    generateToken(res, newUser.id);
     res.status(200).send(response);
     return;
   } catch (error) {
@@ -72,7 +73,7 @@ export const registerUser = async (
         error.errors["authentication.password"].message;
       const response: ResponseProps = {
         isError: true,
-        responseMessage: passwordErrorMessage,
+        message: passwordErrorMessage,
       };
       res.status(400).send(response);
     } else {
@@ -101,7 +102,7 @@ export const signInUser = async (
     if (!user) {
       const response: ResponseProps = {
         isError: true,
-        responseMessage: "Invalid username or email",
+        message: "Invalid username or email",
       };
       res.status(400).send(response);
       return;
@@ -114,18 +115,18 @@ export const signInUser = async (
     if (!passwordMatch) {
       const response: ResponseProps = {
         isError: true,
-        responseMessage: "Invalid username/email or password",
+        message: "Invalid username/email or password",
       };
       res.status(400).send(response);
       return;
     }
     const response: ResponseProps = {
       isError: false,
-      responseMessage: "Sign in successful",
-      responseData: user,
+      message: "Sign in successful",
+      data: user,
     };
 
-    generateToken(res, user._id.toString());
+    generateToken(res, user.id);
     res.status(200).send(response);
   } catch (error) {
     res.status(400).send(error);
@@ -142,9 +143,42 @@ export const signOutUser = async (
   });
   const response: ResponseProps = {
     isError: true,
-    responseMessage: "Sign out successful",
+    message: "Sign out successful",
   };
   res.status(200).send(response);
+};
+
+export const getUserProfile = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  jwt.verify(
+    req.cookies.jwt,
+    process.env.JWT_SECRET,
+    async function (err: Error, decoded: jwt.JwtPayload) {
+      if (err) {
+        const response: ResponseProps = {
+          isError: true,
+          message: "Missing token",
+        };
+        res.status(400).send(response);
+      }
+      try {
+        const user = await getUserById(decoded.userId);
+        if (!user) {
+          res.status(400).send("User not found");
+        }
+        const response: ResponseProps = {
+          isError: false,
+          message: "Success",
+          data: user,
+        };
+        res.status(200).send(response);
+      } catch (error) {
+        res.status(400).send(error);
+      }
+    }
+  );
 };
 
 export const getUsers = () => UserModel.find({});
