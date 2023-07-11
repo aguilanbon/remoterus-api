@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { UserModel } from "../model/users";
 import express from "express";
+import { ResponseProps } from "../types/response.type";
 
 export const isLoggedIn = async (
   req: express.Request,
@@ -11,7 +12,11 @@ export const isLoggedIn = async (
     jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
     next();
   } catch (error) {
-    res.status(401).send("Invalid token");
+    const response: ResponseProps = {
+      isError: true,
+      message: "Invalid token",
+    };
+    res.status(401).send(response);
   }
 };
 

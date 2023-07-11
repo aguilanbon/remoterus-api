@@ -1,5 +1,4 @@
 import express from "express";
-import http from "http";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
@@ -24,4 +23,4 @@ mongoose
   .then(() => console.log("connected to db"));
 mongoose.connection.on("error", (error: Error) => console.log(error));
 
-app.use("/auth", auth_router);
+app.use("/api/auth", auth_router);
