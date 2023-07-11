@@ -3,6 +3,7 @@ import { UserModel } from "../model/users";
 import express from "express";
 import { ResponseProps } from "types/response.type";
 import bcrypt from "bcrypt";
+import { generateToken } from "../utils/jwtgenerator";
 
 export const registerUser = async (
   req: express.Request,
@@ -58,6 +59,7 @@ export const registerUser = async (
       responseMessage: "Succesfully created user.",
       responseData: newUser,
     };
+    generateToken(res, newUser._id.toString());
     res.status(200).send(response);
     return;
   } catch (error) {
@@ -122,6 +124,8 @@ export const signInUser = async (
       responseMessage: "Sign in successful",
       responseData: user,
     };
+
+    generateToken(res, user._id.toString());
     res.status(200).send(response);
   } catch (error) {
     res.status(400).send(error);
