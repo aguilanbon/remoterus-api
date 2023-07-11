@@ -132,6 +132,21 @@ export const signInUser = async (
   }
 };
 
+export const signOutUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  const response: ResponseProps = {
+    isError: true,
+    responseMessage: "Sign out successful",
+  };
+  res.status(200).send(response);
+};
+
 export const getUsers = () => UserModel.find({});
 
 export const getUserByEmail = (email: String) => UserModel.findOne({ email });
