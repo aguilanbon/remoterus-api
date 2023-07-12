@@ -51,10 +51,10 @@ const UserSchema = new mongoose.Schema(
       },
       mobileNo: {
         type: String,
-        required: true,
+        required: false,
       },
       birthdate: {
-        type: Date,
+        type: String,
         required: true,
       },
       address: {
