@@ -142,7 +142,7 @@ export const signOutUser = async (
     expires: new Date(0),
   });
   const response: ResponseProps = {
-    isError: true,
+    isError: false,
     message: "Sign out successful",
   };
   res.status(200).send(response);
