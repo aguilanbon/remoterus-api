@@ -80,6 +80,12 @@ const UserSchema = new mongoose.Schema(
         },
       },
     },
+    metadata: {
+      avatar: {
+        type: String,
+        required: false,
+      },
+    },
     role: {
       type: String,
       required: true,
