@@ -28,7 +28,7 @@ export const registerUser = async (
         isError: true,
         message: "Email is already existing.",
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
       return;
     }
     if (isUsernameExisting) {
@@ -36,7 +36,7 @@ export const registerUser = async (
         isError: true,
         message: "Username is already taken.",
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
       return;
     }
     if (username.includes(" ")) {
@@ -44,7 +44,7 @@ export const registerUser = async (
         isError: true,
         message: "Username cannot contain spaces.",
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
       return;
     }
     const newUser = await UserModel.create({
@@ -61,7 +61,7 @@ export const registerUser = async (
       data: newUser,
     };
     generateToken(res, newUser.id);
-    res.status(200).send(response);
+    res.status(200).json(response);
     return;
   } catch (error) {
     if (
@@ -75,10 +75,10 @@ export const registerUser = async (
         isError: true,
         message: passwordErrorMessage,
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
     } else {
       // Handle other errors
-      res.status(400).send(error.message);
+      res.status(400).json(error.message);
     }
   }
 };
@@ -104,7 +104,7 @@ export const signInUser = async (
         isError: true,
         message: "Invalid username or email",
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
       return;
     }
     const passwordMatch = await bcrypt.compare(
@@ -117,7 +117,7 @@ export const signInUser = async (
         isError: true,
         message: "Invalid username/email or password",
       };
-      res.status(400).send(response);
+      res.status(400).json(response);
       return;
     }
     const response: ResponseProps = {
@@ -127,9 +127,9 @@ export const signInUser = async (
     };
 
     generateToken(res, user.id);
-    res.status(200).send(response);
+    res.status(200).json(response);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
 };
 
@@ -145,7 +145,7 @@ export const signOutUser = async (
     isError: false,
     message: "Sign out successful",
   };
-  res.status(200).send(response);
+  res.status(200).json(response);
 };
 
 export const getUserProfile = async (
@@ -161,21 +161,21 @@ export const getUserProfile = async (
           isError: true,
           message: "Missing token",
         };
-        res.status(400).send(response);
+        res.status(400).json(response);
       }
       try {
         const user = await getUserById(decoded.userId);
         if (!user) {
-          res.status(400).send("User not found");
+          res.status(400).json("User not found");
         }
         const response: ResponseProps = {
           isError: false,
           message: "Success",
           data: user,
         };
-        res.status(200).send(response);
+        res.status(200).json(response);
       } catch (error) {
-        res.status(400).send(error);
+        res.status(400).json(error);
       }
     }
   );
