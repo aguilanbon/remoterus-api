@@ -138,7 +138,7 @@ export const signOutUser = async (
 ) => {
   res.cookie("jwt", "", {
     httpOnly: true,
-    expires: new Date(0),
+    maxAge: 1,
   });
   const response: ResponseProps = {
     isError: false,
