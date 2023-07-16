@@ -58,7 +58,6 @@ export const registerUser = async (
     const response: ResponseProps = {
       isError: false,
       message: "Succesfully created user.",
-      data: newUser,
     };
     generateToken(res, newUser.id);
     res.status(200).json(response);
