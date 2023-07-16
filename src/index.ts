@@ -8,8 +8,21 @@ import mongoose from "mongoose";
 import auth_router from "./routes/users";
 
 const app = express();
-
-app.use(cors());
+const options: cors.CorsOptions = {
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "X-Access-Token",
+  ],
+  credentials: true,
+  methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+  // whatever port for next.js
+  origin: process.env.DOMAIN_HOST,
+  preflightContinue: true,
+};
+app.use(cors(options));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
