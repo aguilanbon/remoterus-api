@@ -136,9 +136,10 @@ export const signOutUser = async (
   req: express.Request,
   res: express.Response
 ) => {
-  res.cookie("jwt", "", {
+  res.clearCookie("jwt", {
     httpOnly: true,
-    maxAge: 1,
+    secure: process.env.SERVER_ENVIRONMENT !== "development",
+    sameSite: "strict",
   });
   const response: ResponseProps = {
     isError: false,
