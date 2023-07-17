@@ -140,6 +140,7 @@ export const signOutUser = async (
     httpOnly: true,
     secure: process.env.SERVER_ENVIRONMENT !== "development",
     sameSite: "strict",
+    maxAge: 1,
   });
   const response: ResponseProps = {
     isError: false,
