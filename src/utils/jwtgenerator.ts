@@ -3,7 +3,7 @@ import express from "express";
 
 export const generateToken = (res: express.Response, userId: String) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "2 days",
   });
 
   res.cookie("jwt", token, {
