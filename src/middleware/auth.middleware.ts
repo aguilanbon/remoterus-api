@@ -53,7 +53,7 @@ export const verifyToken = async (
     if (!reqHeader?.startsWith("Bearer ")) {
       const response: ResponseProps = {
         isError: true,
-        message: "Invalid token",
+        message: "Forbidden",
       };
       res.status(401).json(response);
     }
@@ -78,7 +78,7 @@ export const verifyToken = async (
   } catch (error) {
     const response: ResponseProps = {
       isError: true,
-      message: "Invalid token",
+      message: error.message,
     };
     res.status(401).send(response);
   }
