@@ -166,7 +166,7 @@ export const getUserProfile = async (
 ) => {
   jwt.verify(
     req.cookies.jwt,
-    process.env.JWT_SECRET,
+    process.env.JWT_REFRESH_SECRET,
     async function (err: Error, decoded: jwt.JwtPayload) {
       if (err) {
         const response: ResponseProps = {
