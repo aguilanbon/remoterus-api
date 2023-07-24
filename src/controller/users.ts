@@ -63,7 +63,7 @@ export const registerUser = async (
       isError: false,
       message: "Succesfully created user.",
     };
-    generateToken(res, newUser.id);
+    // generateToken(res, newUser.id);
     res.status(200).json(response);
     return;
   } catch (error) {
