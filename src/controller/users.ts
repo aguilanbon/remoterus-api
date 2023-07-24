@@ -3,7 +3,11 @@ import { UserModel } from "../model/users";
 import express from "express";
 import { ResponseProps } from "types/response.type";
 import bcrypt from "bcrypt";
-import { generateToken } from "../utils/jwtgenerator";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  generateToken,
+} from "../utils/jwtgenerator";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const registerUser = async (
@@ -90,12 +94,12 @@ export const signInUser = async (
 
   try {
     let user = await getUserByEmail(username).select(
-      "+authentication.password"
+      "+authentication.password +authentication.accessToken"
     );
 
     if (!user) {
       user = await getUserByUserName(username).select(
-        "+authentication.password"
+        "+authentication.password +authentication.accessToken"
       );
     }
     if (!user) {
@@ -124,8 +128,15 @@ export const signInUser = async (
       message: "Sign in successful",
       data: user,
     };
-
-    generateToken(res, user.id);
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+    user.authentication.accessToken = accessToken;
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true,
+      secure: process.env.SERVER_ENVIRONMENT !== "development",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json(error);
@@ -180,6 +191,42 @@ export const getUserProfile = async (
       }
     }
   );
+};
+
+export const refreshToken = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const cookies = req.cookies;
+
+  if (!cookies.jwt) {
+    const response: ResponseProps = {
+      isError: true,
+      message: "Unauthorized",
+    };
+
+    res.status(401).json(response);
+  }
+
+  const refreshToken = cookies.jwt;
+
+  try {
+    const decoded: any | JwtPayload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    if (!decoded) res.json({ message: "Forbidden" });
+
+    const foundUser = await getUserById(decoded.userId).select(
+      "+authentication.accessToken"
+    );
+    if (!foundUser) res.json({ message: "Unauthorized" });
+    const accessToken = generateAccessToken(foundUser.id);
+    res.json({ accessToken });
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getUsers = () => UserModel.find({});
