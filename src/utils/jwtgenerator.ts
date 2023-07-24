@@ -10,7 +10,7 @@ export const generateToken = (res: express.Response, userId: String) => {
     httpOnly: true,
     secure: process.env.SERVER_ENVIRONMENT !== "development",
     sameSite: "strict",
-    maxAge: 86400,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
 
@@ -22,7 +22,7 @@ export const generateAccessToken = (userId: String) => {
 };
 export const generateRefreshToken = (userId: String) => {
   const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "1day",
   });
   return refreshToken;
 };
