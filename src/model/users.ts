@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema(
         required: true,
         select: false,
       },
-      sessionToken: { type: String, select: false },
+      accessToken: { type: String, select: false },
     },
 
     personalInformation: {
