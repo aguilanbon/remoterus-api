@@ -41,3 +41,41 @@ export const isAuthorized = async (
     res.status(401).send("Unauthorized");
   }
 };
+
+export const verifyToken = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const reqHeader = req.headers.authorization;
+
+    if (!reqHeader?.startsWith("Bearer ")) {
+      const response: ResponseProps = {
+        isError: true,
+        message: "Invalid token",
+      };
+      res.status(401).send(response);
+    }
+    const token = reqHeader.split(" ")[1];
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        const response: ResponseProps = {
+          isError: true,
+          message: "Invalid token",
+        };
+        res.status(401).send(response);
+      } else {
+        next();
+      }
+    });
+    next();
+  } catch (error) {
+    const response: ResponseProps = {
+      isError: true,
+      message: "Invalid token",
+    };
+    res.status(401).send(response);
+  }
+};

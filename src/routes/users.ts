@@ -1,4 +1,4 @@
-import { isLoggedIn } from "../middleware/auth.middleware";
+import { isLoggedIn, verifyToken } from "../middleware/auth.middleware";
 import {
   getUserProfile,
   refreshToken,
@@ -12,8 +12,8 @@ const auth_router = express.Router();
 
 auth_router.post("/register", registerUser);
 auth_router.post("/signin", signInUser);
-auth_router.get("/profile", isLoggedIn, getUserProfile);
-auth_router.post("/signout", isLoggedIn, signOutUser);
-auth_router.get("/refresh", isLoggedIn, refreshToken);
+auth_router.get("/profile", verifyToken, getUserProfile);
+auth_router.post("/signout", verifyToken, signOutUser);
+auth_router.get("/refresh", verifyToken, refreshToken);
 
 export default auth_router;
