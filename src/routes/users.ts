@@ -13,7 +13,7 @@ const auth_router = express.Router();
 auth_router.post("/register", registerUser);
 auth_router.post("/signin", signInUser);
 auth_router.get("/profile", verifyToken, getUserProfile);
-auth_router.post("/signout", verifyToken, signOutUser);
+auth_router.post("/signout", signOutUser);
 auth_router.get("/refresh", verifyToken, refreshToken);
 
 export default auth_router;
