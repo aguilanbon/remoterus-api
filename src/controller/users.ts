@@ -164,33 +164,22 @@ export const getUserProfile = async (
   req: express.Request,
   res: express.Response
 ) => {
-  jwt.verify(
-    req.cookies.jwt,
-    process.env.JWT_REFRESH_SECRET,
-    async function (err: Error, decoded: jwt.JwtPayload) {
-      if (err) {
-        const response: ResponseProps = {
-          isError: true,
-          message: "Missing token",
-        };
-        res.status(400).json(response);
-      }
-      try {
-        const user = await getUserById(decoded.userId);
-        if (!user) {
-          res.status(400).json("User not found");
-        }
-        const response: ResponseProps = {
-          isError: false,
-          message: "Success",
-          data: user,
-        };
-        res.status(200).json(response);
-      } catch (error) {
-        res.status(400).json(error);
-      }
-    }
-  );
+  const { userId } = req.body;
+  const user = await getUserById(userId);
+  if (!user) {
+    const response: ResponseProps = {
+      isError: true,
+      message: "User not found",
+    };
+    res.status(400).json(response);
+  } else {
+    const response: ResponseProps = {
+      isError: false,
+      message: "Success",
+      data: user,
+    };
+    res.status(200).json(response);
+  }
 };
 
 export const refreshToken = async (

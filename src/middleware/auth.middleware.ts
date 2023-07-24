@@ -55,22 +55,26 @@ export const verifyToken = async (
         isError: true,
         message: "Invalid token",
       };
-      res.status(401).send(response);
+      res.status(401).json(response);
     }
     const token = reqHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        const response: ResponseProps = {
-          isError: true,
-          message: "Invalid token",
-        };
-        res.status(401).send(response);
-      } else {
-        next();
+    jwt.verify(
+      token,
+      process.env.JWT_SECRET,
+      (err, decoded: jwt.JwtPayload) => {
+        if (err) {
+          const response: ResponseProps = {
+            isError: true,
+            message: "Invalid token",
+          };
+          res.status(401).json(response);
+        } else {
+          req.body.userId = decoded.userId;
+          next();
+        }
       }
-    });
-    next();
+    );
   } catch (error) {
     const response: ResponseProps = {
       isError: true,
