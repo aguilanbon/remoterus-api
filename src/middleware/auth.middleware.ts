@@ -9,7 +9,7 @@ export const isLoggedIn = async (
   next: express.NextFunction
 ) => {
   try {
-    jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+    jwt.verify(req.cookies.jwt, process.env.JWT_REFRESH_SECRET);
     next();
   } catch (error) {
     const response: ResponseProps = {
