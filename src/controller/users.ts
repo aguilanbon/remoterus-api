@@ -131,6 +131,7 @@ export const signInUser = async (
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     user.authentication.accessToken = accessToken;
+    user.authentication.password = "";
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       secure: process.env.SERVER_ENVIRONMENT !== "development",

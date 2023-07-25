@@ -16,7 +16,7 @@ export const generateToken = (res: express.Response, userId: String) => {
 
 export const generateAccessToken = (userId: String) => {
   const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "10s",
+    expiresIn: "15s",
   });
   return accessToken;
 };
